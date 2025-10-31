@@ -11,26 +11,28 @@ export interface Edge {
     type: "time" | "cost";
 }
 
-export class GraphNode {
+export class GraphNode<T> {
     name: string;
+    value: T;
     edges: Edge[];
 
-    constructor(name: string) {
+    constructor(name: string, value: T) {
         this.name = name;
+        this.value = value;
         this.edges = [];
     }
 }
 
-export class Graph {
+export class Graph<T> {
     private nodes: HashTable;
 
     constructor(size = 100) {
         this.nodes = new HashTable(size);
     }
 
-    addNode(name: string): void {
+    addNode(name: string, value: T): void {
         if (!this.nodes.get(name)) {
-            this.nodes.set(name, new GraphNode(name));
+            this.nodes.set(name, new GraphNode<T>(name, value));
         }
     }
 
@@ -41,22 +43,22 @@ export class Graph {
         type: "time" | "cost",
         bidirectional = true
     ): void {
-        const src: GraphNode | null = this.nodes.get(source);
-        const tgt: GraphNode | null = this.nodes.get(target);
+        const src: GraphNode<T> | null = this.nodes.get(source);
+        const tgt: GraphNode<T> | null = this.nodes.get(target);
         if (!src || !tgt) return;
 
         src.edges.push({ target, weight, type });
         if (bidirectional) tgt.edges.push({ target: source, weight, type });
     }
 
-    getNode(name: string): GraphNode | null {
+    getNode(name: string): GraphNode<T> | null {
         return this.nodes.get(name);
     }
 
     getNodes(): string[] {
         const allNodes: string[] = [];
         for (let i = 0; i < (this.nodes as any).table.length; i++) {
-            const chain = (this.nodes as any).table[i];
+            const chain = (this.nodes as any).table[i] || [];
             for (const entry of chain) {
                 allNodes.push(entry.key);
             }
@@ -65,7 +67,7 @@ export class Graph {
     }
 
     getEdges(name: string): Edge[] {
-        const node: GraphNode | null = this.nodes.get(name);
+        const node: GraphNode<T> | null = this.nodes.get(name);
         return node ? node.edges : [];
     }
 

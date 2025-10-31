@@ -16,7 +16,7 @@ export default {
                 body: ["Yusei Magic", "sans-serif"],
             },
             boxShadow: {
-                glow: "0 0 6px 2px rgba(132, 94, 194, 0.5)",
+                glow: "0 0 4px 4px rgba(0, 0, 0, 0.05)",
             },
             backgroundImage: {
                 "magic-gradient": "linear-gradient(90deg, #845ec2, #b39cd0)",

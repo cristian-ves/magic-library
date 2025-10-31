@@ -32,27 +32,23 @@ export class HashTable {
 
     set(key: string, value: any): void {
         const index = this.hash(key);
+        if (!this.table[index]) this.table[index] = [];
         const chain = this.table[index];
-
-        // colisission
         for (let entry of chain) {
             if (entry.key === key) {
                 entry.value = value;
                 return;
             }
         }
-
         chain.push({ key, value });
     }
 
     get(key: string): any | null {
         const index = this.hash(key);
-        const chain = this.table[index];
-
+        const chain = this.table[index] || [];
         for (let entry of chain) {
             if (entry.key === key) return entry.value;
         }
-
         return null;
     }
 

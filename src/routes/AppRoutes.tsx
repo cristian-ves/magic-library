@@ -1,19 +1,18 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { MainPage } from "../pages/MainPage";
 import { BooksPage } from "../pages/books/BooksPage";
-import { LibrariesPage } from "../pages/LibrariesPage";
-import { GraphPage } from "../pages/GraphPage";
 import { LoadCSVPage } from "../pages/LoadCSVPage";
 import { SimulationPage } from "../pages/SimulationPage";
 import { StructuresPage } from "../pages/StructuresPage";
 import { AppLayout } from "./AppLayout";
 import { BooksSidebar } from "@/components/books";
-import { AddBookPage } from "@/pages/books/AddBookPage";
-import { SearchBookPage } from "@/pages/books/SearchBookPage";
-import { SearchComparisonPage } from "@/pages/books/SearchComparisonPage";
-import { ExportBookPage } from "@/pages/books/ExportBookPage";
+import { AddLibraryPage, GraphPage, LibrariesPage } from "@/pages/library";
+import { AddBookPage, ExportBookPage, SearchBookPage, SearchComparisonPage } from "@/pages/books";
+import { LibrariesSideBar } from "@/components/libraries/LibrariesSideBar";
+import { AddEdgesPage } from "@/pages/library/AddEdgesPage";
 
 export const AppRoutes = () => {
+
     return (
         <div className="min-h-screen">
             <Routes>
@@ -27,11 +26,16 @@ export const AppRoutes = () => {
                         <Route path="search-comparison" element={<SearchComparisonPage />} />
                         <Route path="export" element={<ExportBookPage />} />
                     </Route>
-                    <Route path="/libraries" element={<LibrariesPage />} />
-                    <Route path="/graph" element={<GraphPage />} />
+                    <Route path="/libraries" element={<LibrariesSideBar />}>
+                        <Route index element={<LibrariesPage />} />
+                        <Route path="add-library" element={<AddLibraryPage />} />
+                        <Route path="add-edges" element={<AddEdgesPage />} />
+                        <Route path="graph" element={<GraphPage />} />
+                    </Route>
                     <Route path="/load" element={<LoadCSVPage />} />
                     <Route path="/simulation" element={<SimulationPage />} />
                     <Route path="/structures" element={<StructuresPage />} />
+                    <Route path="/*" element={<Navigate to="/" replace />} />
                 </Route>
             </Routes>
         </div>
