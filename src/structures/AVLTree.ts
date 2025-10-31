@@ -3,6 +3,7 @@
 // Chosen to store books by title efficiently while keeping them sorted
 
 interface AVLNode<T> {
+    key: string;
     value: T;
     left: AVLNode<T> | null;
     right: AVLNode<T> | null;
@@ -17,8 +18,7 @@ export class AVLTree<T> {
     }
 
     private getBalance(node: AVLNode<T> | null): number {
-        if (!node) return 0;
-        return this.height(node.left) - this.height(node.right);
+        return node ? this.height(node.left) - this.height(node.right) : 0;
     }
 
     private rotateRight(y: AVLNode<T>): AVLNode<T> {
@@ -47,51 +47,51 @@ export class AVLTree<T> {
         return y;
     }
 
-    insert(value: T): void {
-        this.root = this._insert(this.root, value);
+    insert(key: string, value: T): void {
+        this.root = this._insert(this.root, key, value);
     }
 
-    private _insert(node: AVLNode<T> | null, value: T): AVLNode<T> {
-        if (!node) {
-            return { value, left: null, right: null, height: 1 };
-        }
+    private _insert(
+        node: AVLNode<T> | null,
+        key: string,
+        value: T
+    ): AVLNode<T> {
+        if (!node) return { key, value, left: null, right: null, height: 1 };
 
-        if (value < node.value) {
-            node.left = this._insert(node.left, value);
-        } else if (value > node.value) {
-            node.right = this._insert(node.right, value);
-        } else {
-            return node;
-        }
+        if (key < node.key) node.left = this._insert(node.left, key, value);
+        else if (key > node.key)
+            node.right = this._insert(node.right, key, value);
+        else node.value = value; // overwrite if key exists
 
         node.height =
             1 + Math.max(this.height(node.left), this.height(node.right));
-
         const balance = this.getBalance(node);
 
-        // Left Left Case
-        if (balance > 1 && value < node.left!.value) {
-            return this.rotateRight(node);
-        }
-
-        // Right Right Case
-        if (balance < -1 && value > node.right!.value) {
-            return this.rotateLeft(node);
-        }
-
-        // Left Right Case
-        if (balance > 1 && value > node.left!.value) {
+        // Left Left
+        if (balance > 1 && key < node.left!.key) return this.rotateRight(node);
+        // Right Right
+        if (balance < -1 && key > node.right!.key) return this.rotateLeft(node);
+        // Left Right
+        if (balance > 1 && key > node.left!.key) {
             node.left = this.rotateLeft(node.left!);
             return this.rotateRight(node);
         }
-
-        // Right Left Case
-        if (balance < -1 && value < node.right!.value) {
+        // Right Left
+        if (balance < -1 && key < node.right!.key) {
             node.right = this.rotateRight(node.right!);
             return this.rotateLeft(node);
         }
 
         return node;
+    }
+
+    search(key: string): T | null {
+        let node = this.root;
+        while (node) {
+            if (key === node.key) return node.value;
+            node = key < node.key ? node.left : node.right;
+        }
+        return null;
     }
 
     inOrder(): T[] {
@@ -107,15 +107,51 @@ export class AVLTree<T> {
         this._inOrder(node.right, result);
     }
 
-    binarySearch(value: T): boolean {
-        return this._binarySearch(this.root, value);
+    delete(key: string): void {
+        this.root = this._delete(this.root, key);
     }
 
-    private _binarySearch(node: AVLNode<T> | null, value: T): boolean {
-        if (!node) return false;
-        if (value === node.value) return true;
-        return value < node.value
-            ? this._binarySearch(node.left, value)
-            : this._binarySearch(node.right, value);
+    private _delete(node: AVLNode<T> | null, key: string): AVLNode<T> | null {
+        if (!node) return null;
+
+        if (key < node.key) node.left = this._delete(node.left, key);
+        else if (key > node.key) node.right = this._delete(node.right, key);
+        else {
+            // Node with only one child or no child
+            if (!node.left) return node.right;
+            if (!node.right) return node.left;
+
+            // Node with two children: Get inorder successor (smallest in right subtree)
+            let temp = node.right;
+            while (temp.left) temp = temp.left;
+
+            node.key = temp.key;
+            node.value = temp.value;
+            node.right = this._delete(node.right, temp.key);
+        }
+
+        node.height =
+            1 + Math.max(this.height(node.left), this.height(node.right));
+        const balance = this.getBalance(node);
+
+        // Balance the tree
+        // Left Left
+        if (balance > 1 && this.getBalance(node.left) >= 0)
+            return this.rotateRight(node);
+        // Left Right
+        if (balance > 1 && this.getBalance(node.left) < 0) {
+            node.left = this.rotateLeft(node.left!);
+            return this.rotateRight(node);
+        }
+        // Right Right
+        if (balance < -1 && this.getBalance(node.right) <= 0)
+            return this.rotateLeft(node);
+        // Right Left
+        if (balance < -1 && this.getBalance(node.right) > 0) {
+            node.right = this.rotateRight(node.right!);
+            return this.rotateLeft(node);
+        }
+
+        return node;
     }
 }

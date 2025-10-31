@@ -1,8 +1,9 @@
+import booksSlice from "@/features/book/booksSlice";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
     reducer: {
-        // counter: counterReducer,
+        books: booksSlice,
     },
 });
 

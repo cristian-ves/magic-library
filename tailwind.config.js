@@ -6,6 +6,7 @@ export default {
         extend: {
             colors: {
                 magicPurple: "#845ec2",
+                grayPurple: "#9b89b3",
                 deepPurple: "#b39cd0",
                 lightPurple: "#fbeaff",
                 magicGreen: "#00c9a7",
