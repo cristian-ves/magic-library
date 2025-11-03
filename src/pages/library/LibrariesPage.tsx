@@ -3,10 +3,9 @@ import { useLibraries } from "@/hooks/useLibraries";
 import type { Library } from "@/types/types";
 
 export const LibrariesPage = () => {
-    const { librariesList, librariesGraph } = useLibraries();
+    const { librariesList, } = useLibraries();
     const allLibraries = librariesList.print();
 
-    //get the libraryGraph and pass it to the card
     return (
         <div className="p-6">
             <h1 className="text-2xl font-heading mb-6">Libraries</h1>
