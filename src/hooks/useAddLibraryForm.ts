@@ -1,4 +1,4 @@
-import type { Library } from "@/features/library/types";
+import type { Library } from "@/types/types";
 import { useState } from "react";
 
 export const useAddLibraryForm = () => {

@@ -85,4 +85,32 @@ export const insertTemplateData = (addLibrary: (library: Library) => void) => {
     ];
 
     templateLibraries.forEach((library) => addLibrary(library));
+
+    const generateBooks = (library: Library, count: number) => {
+        for (let i = 1; i <= count; i++) {
+            const book: Book = {
+                title: `${library.name} Book ${i}`,
+                author: `Author ${i}`,
+                isbn: `${library.id}-ISBN-${i}`,
+                genre: i % 2 === 0 ? "Fiction" : "Non-Fiction",
+                year: 2000 + i,
+                state: "available",
+                library,
+            };
+
+            library.books.linkedList.append(book);
+            library.books.avlTitle.insert(book.title, book);
+            library.books.bPlusTreeGenre.insert(book.genre, book);
+            library.books.bTreeYear.insert(book.year.toString(), book);
+            library.books.hashTableIsbn.set(book.isbn, book);
+        }
+    };
+
+    let remainingBooks = 15;
+    for (const lib of templateLibraries) {
+        const booksForThisLib = Math.min(remainingBooks, 4);
+        generateBooks(lib, booksForThisLib);
+        remainingBooks -= booksForThisLib;
+        if (remainingBooks <= 0) break;
+    }
 };

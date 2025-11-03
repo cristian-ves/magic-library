@@ -3,38 +3,62 @@
 // Chosen because it provides simple FIFO (First-In-First-Out) behavior,
 // ideal for managing ordered processing of elements efficiently.
 
-export class Queue<T> {
-    private items: T[];
+class QueueNode<T> {
+    value: T;
+    next: QueueNode<T> | null = null;
 
-    constructor() {
-        this.items = [];
+    constructor(value: T) {
+        this.value = value;
     }
+}
+
+export class Queue<T> {
+    private head: QueueNode<T> | null = null;
+    private tail: QueueNode<T> | null = null;
+    private _size = 0;
 
     enqueue(item: T): void {
-        this.items.push(item);
+        const node = new QueueNode(item);
+        if (!this.tail) {
+            this.head = this.tail = node;
+        } else {
+            this.tail.next = node;
+            this.tail = node;
+        }
+        this._size++;
     }
 
     dequeue(): T | undefined {
-        return this.items.shift();
+        if (!this.head) return undefined;
+        const value = this.head.value;
+        this.head = this.head.next;
+        if (!this.head) this.tail = null;
+        this._size--;
+        return value;
     }
 
     peek(): T | undefined {
-        return this.items[0];
+        return this.head?.value;
     }
 
     isEmpty(): boolean {
-        return this.items.length === 0;
+        return this._size === 0;
     }
 
     size(): number {
-        return this.items.length;
+        return this._size;
     }
 
-    getAll(): T[] {
-        return [...this.items];
+    *iterator(): IterableIterator<T> {
+        let current = this.head;
+        while (current) {
+            yield current.value;
+            current = current.next;
+        }
     }
 
     clear(): void {
-        this.items = [];
+        this.head = this.tail = null;
+        this._size = 0;
     }
 }

@@ -28,12 +28,15 @@ export const LibrariesProvider = ({ children }: { children: ReactNode }) => {
         const library = libraryNode.value;
         const books = library.books;
 
+
         books.linkedList.append(book);
         books.avlTitle.insert(book.title, book);
         books.bPlusTreeGenre.insert(book.genre, book);
         books.bTreeYear.insert(book.year.toString(), book);
         books.hashTableIsbn.set(book.isbn, book);
     };
+
+
 
     return (
         <LibrariesContext.Provider value={{ librariesGraph, librariesList, addLibrary, addBook }}>

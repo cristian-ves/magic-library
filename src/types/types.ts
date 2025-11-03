@@ -13,7 +13,7 @@ export interface Book {
     genre: string;
     year: number;
     author: string;
-    state: "available" | "borrowed" | "in transit" | "out of stock";
+    state: "available" | "borrowed" | "in transit";
     library: Library;
 }
 

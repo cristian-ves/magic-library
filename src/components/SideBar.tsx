@@ -15,7 +15,7 @@ interface SideBarProps {
 
 export const SideBar = ({ title = "Books menu", items, end }: SideBarProps) => {
     return (
-        <aside className="w-64 h-screen bg-grayPurple text-lightPurple flex flex-col shadow-glow p-4">
+        <aside className="w-64 h-screen bg-grayPurple text-lightPurple flex flex-col shadow-glow p-4 sticky">
             <h1 className="text-2xl font-heading mb-8 text-center">{title}</h1>
             <nav className="flex flex-col gap-2">
                 {items.map((item) => (

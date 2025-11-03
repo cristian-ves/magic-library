@@ -65,4 +65,8 @@ export class DoublyLinkedList<T> {
         }
         return values;
     }
+
+    getHead(): DLNode<T> | null {
+        return this.head;
+    }
 }
